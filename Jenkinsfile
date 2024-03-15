@@ -33,7 +33,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    docker.image("${DOCKER_IMAGE}").run('-d --name dockersrv -p 80:80')
+                    docker.image("${DOCKER_IMAGE}").run('-d --name testing-${env.BUILD_ID} -p 80:80')
                 }
             }
         }
