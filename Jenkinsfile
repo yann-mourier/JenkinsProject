@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        IMAGE = "farweekz/docker_cde_mut:${env.BUILD_ID}"
+        IMAGE = "farweekz/docker_cde_mut:version-${env.BUILD_ID}"
     }
     
     stages {
