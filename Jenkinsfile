@@ -31,6 +31,14 @@ pipeline {
             }
         }
         
+        stage('Remove Previous Docker Container') {
+            steps {
+                script {
+                    docker.container('testing-${env.BUILD_ID}').remove(force: true) || true
+                }
+            }
+        }
+        
         stage('Run Docker Container') {
             steps {
                 script {
