@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_IMAGE = "farweekz/docker_cde_mut:${env.BUILD_ID}"
+        IMAGE = "farweekz/docker_cde_mut:${env.BUILD_ID}"
     }
     
     stages {
@@ -15,7 +15,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build(DOCKER_IMAGE)
+                    docker.build("$IMAGE", '.')
                 }
             }
         }
@@ -24,7 +24,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                        docker.image(DOCKER_IMAGE).push('latest')
+                        docker.image(IMAGE).push('latest')
                     }
                 }
             }
@@ -33,7 +33,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    docker.image(DOCKER_IMAGE).run('-d --name=dockersrv -p 80:80')
+                    docker.image(IMAGE).run('-d --name=dockersrv -p 80:80')
                 }
             }
         }
