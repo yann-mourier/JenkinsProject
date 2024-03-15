@@ -1,25 +1,40 @@
 pipeline {
     agent any
-    stages{
-        stage('code'){
-            steps{
-                git url: 'https://github.com/SaurabhDahibhate/django_jenkins.git', branch: 'master'
+    
+    environment {
+        DOCKER_IMAGE = "farweekz/docker_cde_mut:version-${env.BUILD_ID}"
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
             }
         }
         
-        stage('Build'){
-            steps{
-                sh 'docker build . -t react-django-docker-img:latest'
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("${DOCKER_IMAGE}", '.')
+                }
             }
         }
-        stage('Test'){
-            steps{
-                echo "Testing"
+        
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+                        docker.image("${DOCKER_IMAGE}").push()
+                    }
+                }
             }
         }
-        stage('Deploy'){
-            steps{
-                sh "docker run -d --name react-django-docker-jenkins -p 8002:8002 react-django-docker-img:latest"
+        
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    docker.image("${DOCKER_IMAGE}").run('-d --name dockersrv -p 80:80')
+                }
             }
         }
     }
