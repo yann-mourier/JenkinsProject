@@ -5,6 +5,10 @@ node {
         checkout scm
     }
 
+    stage('Test image') {
+        sh "docker help"
+    }
+
     stage('Build image') {
         docker.build("$IMAGE", '-f Dockerfile .')
     }
