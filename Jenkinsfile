@@ -2,7 +2,7 @@ node {
     def IMAGE = "farweekz/docker_cde_mut:version-${env.BUILD_ID}"
 
     stage('Checkout') {
-        checkout scm
+        git 'https://github.com/yann-mourier/JenkinsProject.git'
     }
 
     stage('Test image') {
