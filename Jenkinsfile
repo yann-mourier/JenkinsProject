@@ -3,6 +3,7 @@ pipeline {
     
     environment {
         DOCKER_IMAGE = "farweekz/docker_cde_mut:version-${env.BUILD_ID}"
+        DOCKER_RUN = "-d --name testing-${env.BUILD_ID} -p 80:80"
     }
     
     stages {
@@ -33,7 +34,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    docker.image("${DOCKER_IMAGE}").run('-d --name testing-${env.BUILD_ID} -p 80:80')
+                    docker.image("${DOCKER_IMAGE}").run(DOCKER_RUN)
                 }
             }
         }
