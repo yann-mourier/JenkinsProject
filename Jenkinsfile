@@ -1,6 +1,10 @@
 pipeline {
     agent any
     
+    environment {
+        DOCKER_IMAGE = "farweekz/docker_cde_mut:${env.BUILD_ID}"
+    }
+    
     stages {
         stage('Checkout') {
             steps {
@@ -10,19 +14,27 @@ pipeline {
         
         stage('Build Docker Image') {
             steps {
-                sh 'sudo docker build -t farweekz/docker_cde_mut:1.0 .'
+                script {
+                    docker.build(DOCKER_IMAGE)
+                }
             }
         }
         
         stage('Push Docker Image') {
             steps {
-                sh 'sudo docker push farweekz/docker_cde_mut:1.0'
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                        docker.image(DOCKER_IMAGE).push('latest')
+                    }
+                }
             }
         }
         
         stage('Run Docker Container') {
             steps {
-                sh 'sudo docker run -d --name=dockersrv -p 80:80 farweekz/docker_cde_mut:1.0'
+                script {
+                    docker.image(DOCKER_IMAGE).run('-d --name=dockersrv -p 80:80')
+                }
             }
         }
     }
