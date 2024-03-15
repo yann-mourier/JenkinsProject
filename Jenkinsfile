@@ -1,6 +1,21 @@
-node {
-    docker.image('nginx:latest').withRun('-P 80:80') { c ->
-        sh 'docker ps'
-        sh 'curl localhost'
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
     }
 }
